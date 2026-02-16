@@ -11,6 +11,7 @@ import Login from './pages/Login.jsx';
 import Dashboard from './pages/Dashboard.jsx'; // Create a Dashboard page
 import PrivateRoute from './components/PrivateRoute.jsx';
 import Navbar from './components/Navbar.jsx'; // Create a Navbar component
+import Home from './pages/Home.jsx';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         <Navbar /> {/* Your navigation bar */}
         <ToastContainer />
         <Routes>
-          {/* <Route path="/" element={<Home />} /> */}
+          <Route path="/" element={<Home />} /> {/* <--- Home Page Route */}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           {/* Protected Routes */}

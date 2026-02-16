@@ -1,6 +1,5 @@
 import Job from '../models/jobModel.js';
-import User from '../models/userModel.js';
-import scrapeJobPosting from '../services/scraperService.js';
+import { scrapeJobPosting } from '../services/scraper/scraperJob.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 import { validationResult } from 'express-validator';
 
@@ -11,27 +10,46 @@ import { validationResult } from 'express-validator';
 export const scrapeJob = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ success: false, message: 'Validation failed', errors: errors.array() });
+    return res.status(400).json({
+      success: false,
+      message: "Validation failed",
+      errors: errors.array(),
+    });
   }
 
   const { url } = req.body;
 
   if (!url) {
-    return res.status(400).json({ success: false, message: 'URL is required for scraping.' });
+    return res.status(400).json({
+      success: false,
+      message: "URL is required for scraping.",
+    });
   }
 
   const scrapedData = await scrapeJobPosting(url);
 
   if (!scrapedData) {
-    return res.status(500).json({ success: false, message: 'Failed to scrape job data.' });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to scrape job data.",
+    });
   }
 
-  res.json({
+  // 🔥 SAVE TO DB
+  const newJob = await Job.create({
+    userId: req.user.id,
+    ...scrapedData,
+    sourceUrl: url,
+    dateAdded: new Date(),
+  });
+
+  res.status(201).json({
     success: true,
-    message: 'Job scraped successfully',
-    data: scrapedData,
+    message: "Job scraped and saved successfully",
+    data: newJob,
   });
 });
+
 
 
 // @desc    Create a new job entry
