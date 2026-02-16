@@ -23,7 +23,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.1",
     "morgan": "^1.10.1",
-    "puppeteer": "^24.37.2",
+    "playwright": "^1.58.2",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

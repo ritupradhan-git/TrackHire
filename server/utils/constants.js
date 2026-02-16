@@ -11,3 +11,9 @@
 };
 
  export const JOB_STATUSES = ["Saved", "Applied", "Interview", "Rejected"];
+
+ export const SCRAPE_STATUSES = {
+  ACTIVE: 'ACTIVE',
+  CLOSED: 'CLOSED',
+  ERROR: 'ERROR',
+};

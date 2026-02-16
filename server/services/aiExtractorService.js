@@ -1,5 +1,5 @@
 // server/services/aiExtractorService.js
-import  { JOB_STATUSES } from '../utils/constants.js';
+import  { SCRAPE_STATUSES } from '../utils/constants.js';
 
 /**
  * Attempts to extract structured job data from raw text content when direct selectors fail.
@@ -18,6 +18,7 @@ const extractFromRawText = (rawText, sourceUrl) => {
     experience: 'N/A',
     description: rawText ? rawText.substring(0, 5000) + '... (full text fallback)' : 'No detailed description found.',
     sourceUrl: sourceUrl,
+    status:SCRAPE_STATUSES.ACTIVE,
   };
 
   if (!rawText) {
@@ -27,6 +28,16 @@ const extractFromRawText = (rawText, sourceUrl) => {
   // Normalize text for easier parsing
   const lowerCaseText = rawText.toLowerCase();
 
+  if (
+    lowerCaseText.includes('job is no longer available') ||
+    lowerCaseText.includes('position has been filled') ||
+    lowerCaseText.includes('this job has expired') ||
+    lowerCaseText.includes('no longer accepting applications')
+  ) {
+    jobData.status = 'CLOSED';
+    return jobData;
+  }
+  
   // --- Title Extraction (often appears first and is prominent) ---
   // Look for common title indicators near the start of the text
   const titleMatch = rawText.match(/^(.*?)(?:job description|about the role|responsibilities|qualifications)/i);
