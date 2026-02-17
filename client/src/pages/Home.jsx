@@ -1,96 +1,109 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import AuthContext from '../context/AuthContext.jsx'; // To check if the user is logged in
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import AuthContext from "../context/AuthContext.jsx";
 
 const Home = () => {
   const { isAuthenticated } = useContext(AuthContext);
 
   return (
-    <div className="relative min-h-screen bg-white flex flex-col items-center justify-center p-6 overflow-hidden">
-      {/* Background Shapes / Subtle Texture (Optional - adjust as desired) */}
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-50 to-white -z-10 opacity-75"></div>
-      <div className="absolute top-1/4 right-0 w-80 h-80 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-      <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+    <div className="relative min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 overflow-hidden">
 
-      {/* Main Content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto py-12 sm:py-20">
-        <h1 className="text-6xl font-extrabold text-gray-900 leading-tight mb-6 animate-fade-in-up">
-          TrackHigher
-        </h1>
-        <p className="text-2xl text-gray-700 mb-10 leading-relaxed animate-fade-in-up animation-delay-300">
-          Your ultimate companion for a streamlined job application journey.
-          Effortlessly manage, track, and conquer your career goals.
-        </p>
+      {/* Soft Background Blobs */}
+      <div className="absolute -top-20 -left-20 w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+      <div className="absolute top-40 -right-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
 
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-6 animate-fade-in-up animation-delay-600">
-          {isAuthenticated ? (
-            <Link
-              to="/dashboard"
-              className="px-10 py-4 bg-indigo-600 text-white text-xl font-bold rounded-full shadow-lg hover:bg-indigo-700 transform hover:scale-105 transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-offset-2"
-            >
-              Go to Dashboard
-            </Link>
-          ) : (
-            <>
+      {/* HERO SECTION */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-24">
+
+        {/* Glass Card */}
+        <div className="backdrop-blur-xl bg-white/70 border border-gray-200 shadow-2xl rounded-3xl p-12 max-w-4xl w-full">
+
+          <h1 className="text-6xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
+            Track<span className="text-indigo-600">Higher</span>
+          </h1>
+
+          <p className="text-xl md:text-2xl text-gray-700 mb-10 leading-relaxed max-w-2xl mx-auto">
+            Manage, organize, and conquer your job applications with a
+            beautifully simple dashboard built for ambitious professionals.
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
+            {isAuthenticated ? (
               <Link
-                to="/register"
-                className="px-10 py-4 bg-indigo-600 text-white text-xl font-bold rounded-full shadow-lg hover:bg-indigo-700 transform hover:scale-105 transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-offset-2"
+                to="/dashboard"
+                className="px-10 py-4 bg-black text-white text-lg font-semibold rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300"
               >
-                Get Started
+                Go to Dashboard →
               </Link>
-              <Link
-                to="/login"
-                className="px-10 py-4 text-indigo-700 bg-transparent border-2 border-indigo-600 text-xl font-bold rounded-full hover:bg-indigo-50 transform hover:scale-105 transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-offset-2"
-              >
-                Login
-              </Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link
+                  to="/register"
+                  className="px-10 py-4 bg-indigo-600 text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-indigo-700 hover:scale-105 transition duration-300"
+                >
+                  Get Started
+                </Link>
+
+                <Link
+                  to="/login"
+                  className="px-10 py-4 border border-gray-300 text-gray-800 text-lg font-semibold rounded-xl hover:bg-gray-100 hover:scale-105 transition duration-300"
+                >
+                  Login
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Optional: Feature Showcase Section (Slightly less prominent) */}
-      <div className="relative z-10 max-w-5xl mx-auto mt-20 pt-12 border-t border-gray-200 text-center">
-        <h2 className="text-4xl font-bold text-gray-800 mb-8 animate-fade-in-up animation-delay-900">
-          Why Choose TrackHigher?
+      {/* FEATURES */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 pb-24">
+        <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
+          Why TrackHigher?
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-left">
-          {/* Feature 1 */}
-          <div className="bg-white p-8 rounded-xl shadow-md border border-gray-100 transform hover:scale-105 transition duration-300 animate-fade-in-up animation-delay-1200">
-            <div className="text-indigo-500 mb-4">
-              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {/* Card 1 */}
+          <div className="bg-white/80 backdrop-blur-lg border border-gray-200 p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-2 transition duration-300">
+            <div className="w-12 h-12 flex items-center justify-center bg-indigo-100 text-indigo-600 rounded-xl mb-6">
+              📂
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Organize Your Applications</h3>
+            <h3 className="text-xl font-semibold mb-3">Organize Applications</h3>
             <p className="text-gray-600">
-              Keep all your job applications, statuses, and details in one clean, accessible place. Never miss an update.
+              Store all job details, statuses, and notes in one smart and
+              minimal dashboard.
             </p>
           </div>
-          {/* Feature 2 */}
-          <div className="bg-white p-8 rounded-xl shadow-md border border-gray-100 transform hover:scale-105 transition duration-300 animate-fade-in-up animation-delay-1500">
-            <div className="text-indigo-500 mb-4">
-              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+
+          {/* Card 2 */}
+          <div className="bg-white/80 backdrop-blur-lg border border-gray-200 p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-2 transition duration-300">
+            <div className="w-12 h-12 flex items-center justify-center bg-purple-100 text-purple-600 rounded-xl mb-6">
+              ⏰
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Stay On Top of Deadlines</h3>
+            <h3 className="text-xl font-semibold mb-3">Never Miss Deadlines</h3>
             <p className="text-gray-600">
-              Easily track application dates, interview schedules, and follow-up reminders.
+              Smart reminders and timelines ensure every opportunity is
+              followed up on time.
             </p>
           </div>
-          {/* Feature 3 */}
-          <div className="bg-white p-8 rounded-xl shadow-md border border-gray-100 transform hover:scale-105 transition duration-300 animate-fade-in-up animation-delay-1800">
-            <div className="text-indigo-500 mb-4">
-              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+
+          {/* Card 3 */}
+          <div className="bg-white/80 backdrop-blur-lg border border-gray-200 p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-2 transition duration-300">
+            <div className="w-12 h-12 flex items-center justify-center bg-pink-100 text-pink-600 rounded-xl mb-6">
+              📊
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Gain Insights & Success</h3>
+            <h3 className="text-xl font-semibold mb-3">Actionable Insights</h3>
             <p className="text-gray-600">
-              Understand your application patterns and improve your strategy for higher success rates.
+              Analyze patterns and improve your job strategy with intelligent
+              tracking.
             </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Footer (Optional, you might have a global footer) */}
-      <footer className="relative z-10 mt-20 text-gray-500 text-sm">
-        &copy; {new Date().getFullYear()} TrackHigher. All rights reserved.
+      {/* FOOTER */}
+      <footer className="text-center pb-10 text-gray-500 text-sm">
+        © {new Date().getFullYear()} TrackHigher. Crafted for achievers.
       </footer>
     </div>
   );
