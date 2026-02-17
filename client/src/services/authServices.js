@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const API_URL = 'http://localhost:5000/api/auth'; // Adjust if your API is on a different base URL
+const API_URL = 'https://trackhire-xntz.onrender.com/api/auth'; // Adjust if your API is on a different base URL
 
 // Register user
 const register = async (userData) => {
