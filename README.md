@@ -44,7 +44,7 @@ TrackHire is built using modern full-stack technologies:
   - Node.js – Server runtime
 
 - **Playwright JS**
-  - Used for automation and handling dynamic job application pages.
+  - Used for web scrapping of url.
 
 - **Deployment**
   - Deployed and production-ready environment.
