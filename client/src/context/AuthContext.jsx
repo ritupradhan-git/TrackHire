@@ -19,7 +19,6 @@ const authReducer = (state, action) => {
     case 'REGISTER_FAIL':
     case 'LOGIN_FAIL':
     case 'AUTH_ERROR':
-    case 'LOGOUT':
       localStorage.removeItem('token');
       return {
         ...state,
@@ -28,6 +27,17 @@ const authReducer = (state, action) => {
         loading: false,
         user: null,
         error: action.payload,
+      };
+    case 'NO_TOKEN':
+    case 'LOGOUT':
+      localStorage.removeItem('token');
+      return {
+        ...state,
+        token: null,
+        isAuthenticated: false,
+        loading: false,
+        user: null,
+        error: null,
       };
     case 'USER_LOADED':
       return {
@@ -69,7 +79,7 @@ export const AuthProvider = ({ children }) => {
           dispatch({ type: 'AUTH_ERROR', payload: err.message });
         }
       } else {
-        dispatch({ type: 'AUTH_ERROR', payload: 'No token found' });
+        dispatch({ type: 'NO_TOKEN' });
       }
     };
     loadUser();

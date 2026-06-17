@@ -1,21 +1,22 @@
-// ExportButton.jsx
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faFileArrowDown, 
+  faCircleNotch 
+} from '@fortawesome/free-solid-svg-icons';
 import * as jobService from '../services/jobService.js';
-import { toast } from 'react-toastify'; // Assuming you use toast
+import { toast } from 'react-toastify';
 
 const ExportButton = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleExport = async () => { // Make this async to await jobService call
+  const handleExport = async () => {
     setLoading(true);
-    setError('');
     try {
-      await jobService.exportJobsToExcel(); // Await the async function
-      toast.success('Jobs exported successfully!');
+      await jobService.exportJobsToExcel();
+      toast.success('Spreadsheet generated successfully');
     } catch (err) {
       const message = err.response?.data?.message || err.message || 'Failed to export jobs.';
-      setError(message);
       toast.error(message);
     } finally {
       setLoading(false);
@@ -23,20 +24,31 @@ const ExportButton = () => {
   };
 
   return (
-    <div className="mb-4">
-      {/* ... error display ... */}
-      <button
-        onClick={handleExport}
-        disabled={loading}
-        className={`px-6 py-3 rounded-lg text-white font-semibold shadow-md transition duration-300 ease-in-out ${
-          loading
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
-        }`}
-      >
-        {loading ? 'Exporting...' : 'Export to Excel'}
-      </button>
-    </div>
+    <button
+      onClick={handleExport}
+      disabled={loading}
+      className={`
+        flex items-center gap-3 px-5 py-2.5 
+        text-sm font-bold transition-all duration-200
+        rounded-2xl border
+        ${loading 
+          ? 'bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed' 
+          : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm active:scale-95'
+        }
+      `}
+    >
+      {loading ? (
+        <>
+          <FontAwesomeIcon icon={faCircleNotch} spin className="text-blue-600" />
+          <span>Exporting...</span>
+        </>
+      ) : (
+        <>
+          <FontAwesomeIcon icon={faFileArrowDown} className="text-blue-600" />
+          <span>Export to Excel</span>
+        </>
+      )}
+    </button>
   );
 };
 

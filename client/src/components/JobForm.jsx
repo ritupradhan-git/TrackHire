@@ -1,4 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faWandMagicSparkles, 
+  faCircleNotch, 
+  faPlus, 
+  faXmark, 
+  faBriefcase, 
+  faBuilding, 
+  faLocationDot, 
+  faDollarSign, 
+  faLink, 
+  faPenNib,
+  faStickyNote
+} from '@fortawesome/free-solid-svg-icons';
 import * as jobService from "../services/jobService.js";
 
 const jobStatuses = ["Saved", "Applied", "Interview", "Rejected"];
@@ -32,19 +46,6 @@ const JobForm = ({ onSave, onCancel, jobToEdit }) => {
         status: jobToEdit.status || "Saved",
         notes: jobToEdit.notes || "",
       });
-    } else {
-      // Reset form if no jobToEdit is provided (for new job creation)
-      setFormData({
-        title: "",
-        company: "",
-        location: "",
-        salary: "",
-        experience: "",
-        description: "",
-        sourceUrl: "",
-        status: "Saved",
-        notes: "",
-      });
     }
   }, [jobToEdit]);
 
@@ -53,27 +54,17 @@ const JobForm = ({ onSave, onCancel, jobToEdit }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleScrapeChange = (e) => {
-    setScrapeUrl(e.target.value);
-  };
-
-  // JobForm.jsx - inside handleScrape
   const handleScrape = async () => {
     setError("");
     setLoading(true);
-    console.log("1. Scrape button clicked. Current scrapeUrl:", scrapeUrl);
-
-    // Add a quick client-side URL validation here for robustness
     if (!scrapeUrl || !scrapeUrl.startsWith("http")) {
       setError("Please enter a valid URL (starting with http:// or https://)");
       setLoading(false);
-      return; // Stop execution if URL is invalid
+      return;
     }
 
     try {
-      console.log("2. Attempting to call jobService.scrapeJob...");
       const scrapedJob = await jobService.scrapeJob(scrapeUrl);
-      console.log("3. Frontend received scraped data:", scrapedJob); // This should now show if POST succeeded
       const jobData = scrapedJob.data;
       setFormData((prevData) => ({
         ...prevData,
@@ -85,17 +76,11 @@ const JobForm = ({ onSave, onCancel, jobToEdit }) => {
         salary: jobData.salary || prevData.salary,
         experience: jobData.experience || prevData.experience,
       }));
-      setScrapeUrl(""); // Clear scrape URL after successful scrape
-      console.log("4. Form data updated successfully.");
+      setScrapeUrl("");
     } catch (err) {
-      console.error("5. Error during scraping process:", err); // Catch any errors from jobService.scrapeJob
-      setError(
-        err.response?.data?.message ||
-          "Failed to scrape job. Please check the URL and try again.",
-      );
+      setError(err.response?.data?.message || "Failed to scrape job. Please enter details manually.");
     } finally {
       setLoading(false);
-      console.log("6. Scraping process finished.");
     }
   };
 
@@ -108,249 +93,148 @@ const JobForm = ({ onSave, onCancel, jobToEdit }) => {
       } else {
         await jobService.createJob(formData);
       }
-      onSave(); // Callback to refresh jobs and close form
+      onSave();
     } catch (err) {
       setError(err.response?.data?.message || "Failed to save job");
     }
   };
 
+  const inputClasses = "w-full px-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-50 focus:border-blue-600 outline-none transition-all text-sm font-medium placeholder:text-slate-400";
+  const labelClasses = "block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide flex items-center gap-2";
+
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 mb-8 border border-gray-200">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
-        {jobToEdit ? "Edit Job" : "Add New Job"}
-      </h2>
+    <div className="relative">
+      {/* Header */}
+      <div className="flex justify-between items-start gap-4 mb-6">
+        <div>
+          <h2 className="text-[1.65rem] leading-tight font-extrabold text-slate-900">
+            {jobToEdit ? "Edit Application" : "New Application"}
+          </h2>
+          <p className="text-slate-500 text-sm mt-1">Fill in the details manually or auto-fill via URL.</p>
+        </div>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="shrink-0 text-slate-400 hover:text-slate-600 transition-colors"
+          aria-label="Close job form"
+        >
+          <FontAwesomeIcon icon={faXmark} size="lg" />
+        </button>
+      </div>
 
       {error && (
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-          role="alert"
-        >
-          <span className="block sm:inline">{error}</span>
+        <div className="bg-rose-50 border border-rose-100 text-rose-600 px-4 py-3 rounded-2xl text-sm font-semibold mb-6 flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-rose-500" />
+          {error}
         </div>
       )}
 
-      {/* Scrape Section */}
-      <div className="mb-6 border-b pb-6 border-gray-200">
-        <label
-          htmlFor="scrapeUrl"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Scrape Job from URL
-        </label>
-        <div className="flex space-x-3">
-          <input
-            type="url"
-            id="scrapeUrl"
-            name="scrapeUrl"
-            value={scrapeUrl}
-            onChange={handleScrapeChange}
-            placeholder="e.g., https://www.linkedin.com/jobs/..."
-            className="flex-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-          <button
-            type="button"
-            onClick={handleScrape}
-            disabled={loading || !scrapeUrl}
-            className={`px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white ${
-              loading || !scrapeUrl
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-            }`}
-          >
-            {loading ? "Scraping..." : "Scrape"}
-          </button>
-        </div>
-      </div>
-
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
-      >
-        {/* Title */}
-        <div>
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Job Title <span className="text-red-500">*</span>
+      {/* MAGIC SCRAPE SECTION */}
+      {!jobToEdit && (
+        <div className="mb-7 p-5 bg-purple-50/40 border border-purple-100 rounded-2xl">
+          <label htmlFor="scrapeUrl" className={`${labelClasses} text-purple-600`}>
+            <FontAwesomeIcon icon={faWandMagicSparkles} /> Magic Auto-fill
           </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              type="url"
+              id="scrapeUrl"
+              value={scrapeUrl}
+              onChange={(e) => setScrapeUrl(e.target.value)}
+              placeholder="Paste LinkedIn, Indeed, or Glassdoor URL..."
+              className={`${inputClasses} border-purple-200 focus:ring-purple-50 focus:border-purple-400`}
+            />
+            <button
+              type="button"
+              onClick={handleScrape}
+              disabled={loading || !scrapeUrl}
+              className={`px-6 py-2.5 font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md sm:whitespace-nowrap ${
+                loading || !scrapeUrl
+                  ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
+                  : "bg-purple-600 text-white hover:bg-purple-700 shadow-purple-100 active:scale-95"
+              }`}
+            >
+              {loading ? <FontAwesomeIcon icon={faCircleNotch} spin /> : <FontAwesomeIcon icon={faWandMagicSparkles} />}
+              {loading ? "Scraping..." : "Auto-fill"}
+            </button>
+          </div>
         </div>
+      )}
 
-        {/* Company */}
-        <div>
-          <label
-            htmlFor="company"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Company <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            id="company"
-            name="company"
-            value={formData.company}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Job Title */}
+          <div>
+            <label className={labelClasses}><FontAwesomeIcon icon={faBriefcase} /> Job Title *</label>
+            <input name="title" value={formData.title} onChange={handleChange} required className={inputClasses} placeholder="e.g. Senior Frontend Engineer" />
+          </div>
 
-        {/* Location */}
-        <div>
-          <label
-            htmlFor="location"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Location
-          </label>
-          <input
-            type="text"
-            id="location"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
+          {/* Company */}
+          <div>
+            <label className={labelClasses}><FontAwesomeIcon icon={faBuilding} /> Company *</label>
+            <input name="company" value={formData.company} onChange={handleChange} required className={inputClasses} placeholder="e.g. Stripe" />
+          </div>
 
-        {/* Salary */}
-        <div>
-          <label
-            htmlFor="salary"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Salary
-          </label>
-          <input
-            type="text"
-            id="salary"
-            name="salary"
-            value={formData.salary}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
+          {/* Location */}
+          <div>
+            <label className={labelClasses}><FontAwesomeIcon icon={faLocationDot} /> Location</label>
+            <input name="location" value={formData.location} onChange={handleChange} className={inputClasses} placeholder="e.g. San Francisco or Remote" />
+          </div>
 
-        {/* Experience */}
-        <div>
-          <label
-            htmlFor="experience"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Experience
-          </label>
-          <input
-            type="text"
-            id="experience"
-            name="experience"
-            value={formData.experience}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
+          {/* Status */}
+          <div>
+            <label className={labelClasses}>Current Status</label>
+            <select name="status" value={formData.status} onChange={handleChange} className={`${inputClasses} appearance-none cursor-pointer`}>
+              {jobStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
 
-        {/* Status */}
-        <div>
-          <label
-            htmlFor="status"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Status
-          </label>
-          <select
-            id="status"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          >
-            {jobStatuses.map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
+          {/* Salary */}
+          <div>
+            <label className={labelClasses}><FontAwesomeIcon icon={faDollarSign} /> Salary Range</label>
+            <input name="salary" value={formData.salary} onChange={handleChange} className={inputClasses} placeholder="e.g. $120k - $150k" />
+          </div>
+
+          {/* Experience */}
+          <div>
+            <label className={labelClasses}><FontAwesomeIcon icon={faBriefcase} /> Experience Level</label>
+            <input name="experience" value={formData.experience} onChange={handleChange} className={inputClasses} placeholder="e.g. 3-5 years" />
+          </div>
         </div>
 
         {/* Source URL */}
-        <div className="md:col-span-2">
-          <label
-            htmlFor="sourceUrl"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Source URL <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="url"
-            id="sourceUrl"
-            name="sourceUrl"
-            value={formData.sourceUrl}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
+        <div>
+          <label className={labelClasses}><FontAwesomeIcon icon={faLink} /> Listing URL *</label>
+          <input name="sourceUrl" type="url" value={formData.sourceUrl} onChange={handleChange} required className={inputClasses} placeholder="https://..." />
         </div>
 
         {/* Description */}
-        <div className="md:col-span-2">
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Description <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            rows="4"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          ></textarea>
+        <div>
+          <label className={labelClasses}><FontAwesomeIcon icon={faPenNib} /> Description *</label>
+          <textarea name="description" rows="4" value={formData.description} onChange={handleChange} required className={`${inputClasses} resize-none`} placeholder="Key requirements and details..." />
         </div>
 
         {/* Notes */}
-        <div className="md:col-span-2">
-          <label
-            htmlFor="notes"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Notes
-          </label>
-          <textarea
-            id="notes"
-            name="notes"
-            rows="3"
-            value={formData.notes}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          ></textarea>
+        <div>
+          <label className={labelClasses}><FontAwesomeIcon icon={faStickyNote} /> Personal Notes</label>
+          <textarea name="notes" rows="2" value={formData.notes} onChange={handleChange} className={`${inputClasses} resize-none`} placeholder="Referral info, follow-up dates, etc." />
         </div>
 
-        {/* Action Buttons */}
-        <div className="md:col-span-2 flex justify-end space-x-3 mt-4">
+        {/* Form Actions */}
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-5 border-t border-slate-100">
           <button
             type="button"
             onClick={onCancel}
-            className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="px-8 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl shadow-md shadow-blue-100 hover:bg-blue-700 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
           >
-            {jobToEdit ? "Update Job" : "Add Job"}
+            <FontAwesomeIcon icon={jobToEdit ? faPenNib : faPlus} />
+            {jobToEdit ? "Update Application" : "Save Application"}
           </button>
         </div>
       </form>

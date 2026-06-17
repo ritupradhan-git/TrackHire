@@ -1,34 +1,74 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faBookmark, 
+  faPaperPlane, 
+  faComments, 
+  faCircleXmark, 
+  faCircleCheck,
+  faCircle
+} from '@fortawesome/free-solid-svg-icons';
 
 const StatusBadge = ({ status }) => {
-  let bgColor = 'bg-gray-200';
-  let textColor = 'text-gray-800';
+  // Define styles and icons for each status
+  const statusConfig = {
+    Saved: {
+      bg: 'bg-slate-50',
+      text: 'text-slate-600',
+      border: 'border-slate-200',
+      dot: 'text-slate-400',
+      icon: faBookmark
+    },
+    Applied: {
+      bg: 'bg-blue-50',
+      text: 'text-blue-700',
+      border: 'border-blue-100',
+      dot: 'text-blue-500',
+      icon: faPaperPlane
+    },
+    Interview: {
+      bg: 'bg-amber-50',
+      text: 'text-amber-700',
+      border: 'border-amber-100',
+      dot: 'text-amber-500',
+      icon: faComments
+    },
+    Offer: {
+      bg: 'bg-emerald-50',
+      text: 'text-emerald-700',
+      border: 'border-emerald-100',
+      dot: 'text-emerald-500',
+      icon: faCircleCheck
+    },
+    Rejected: {
+      bg: 'bg-rose-50',
+      text: 'text-rose-700',
+      border: 'border-rose-100',
+      dot: 'text-rose-500',
+      icon: faCircleXmark
+    }
+  };
 
-  switch (status) {
-    case 'Saved':
-      bgColor = 'bg-blue-100';
-      textColor = 'text-blue-800';
-      break;
-    case 'Applied':
-      bgColor = 'bg-green-100';
-      textColor = 'text-green-800';
-      break;
-    case 'Interview':
-      bgColor = 'bg-purple-100';
-      textColor = 'text-purple-800';
-      break;
-    case 'Rejected':
-      bgColor = 'bg-red-100';
-      textColor = 'text-red-800';
-      break;
-    default:
-      break;
-  }
+  // Fallback for unknown status
+  const config = statusConfig[status] || {
+    bg: 'bg-gray-50',
+    text: 'text-gray-600',
+    border: 'border-gray-200',
+    dot: 'text-gray-400',
+    icon: faCircle
+  };
 
   return (
     <span
-      className={`inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium ${bgColor} ${textColor}`}
+      className={`
+        inline-flex items-center gap-2 
+        px-3 py-1 rounded-full border
+        text-[11px] font-bold uppercase tracking-wider
+        ${config.bg} ${config.text} ${config.border}
+        transition-all duration-200
+      `}
     >
+      <FontAwesomeIcon icon={config.icon} className="text-[10px]" />
       {status}
     </span>
   );
