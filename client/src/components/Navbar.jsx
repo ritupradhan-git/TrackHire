@@ -1,15 +1,16 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faRightFromBracket, 
-  faUserCircle, 
-  faTableList, 
+import React, { useContext, useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faRightFromBracket,
+  faUserCircle,
+  faTableList,
   faRocket,
   faBars,
-  faTimes
-} from '@fortawesome/free-solid-svg-icons';
-import AuthContext from '../context/AuthContext.jsx';
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
+import AuthContext from "../context/AuthContext.jsx";
+import Logo from '../assets/Logo.png'
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -22,27 +23,37 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
-    { name: 'Features', path: '/#features', icon: faRocket },
-    { name: 'Dashboard', path: '/dashboard', icon: faTableList },
+    { name: "Features", path: "/#features", icon: faRocket },
+    { name: "Dashboard", path: "/dashboard", icon: faTableList },
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 h-20 flex items-center ${
-      isScrolled ? 'bg-white/80 backdrop-blur-lg border-b border-gray-100 shadow-sm' : 'bg-transparent'
-    }`}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 h-20 flex items-center ${
+        isScrolled
+          ? "bg-white/80 backdrop-blur-lg border-b border-gray-100 shadow-sm"
+          : "bg-transparent"
+      }`}
+    >
       <div className="container mx-auto px-6 flex justify-between items-center">
-        
         {/* LOGO */}
-        <Link to="/" className="text-2xl font-extrabold tracking-tighter text-slate-900 flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white text-sm">
-            <FontAwesomeIcon icon={faRocket} />
-          </div>
-          <span>Track<span className="text-blue-600">Higher</span></span>
+        <Link
+          to="/"
+          className="text-2xl font-extrabold tracking-tighter text-slate-900 flex items-center gap-2"
+        >
+          <img
+            src={Logo}
+            alt="TrackHigher Logo"
+            className="w-9 h-9 object-contain"
+          />
+          <span>
+            Track<span className="text-blue-600">Higher</span>
+          </span>
         </Link>
 
         {/* CENTER NAVIGATION (Desktop) */}
@@ -52,7 +63,9 @@ const Navbar = () => {
               key={link.name}
               to={link.path}
               className={`text-sm font-semibold transition-colors hover:text-blue-600 ${
-                location.pathname === link.path ? 'text-blue-600' : 'text-gray-500'
+                location.pathname === link.path
+                  ? "text-blue-600"
+                  : "text-gray-500"
               }`}
             >
               {link.name}
@@ -65,8 +78,13 @@ const Navbar = () => {
           {user ? (
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2 text-gray-700">
-                <FontAwesomeIcon icon={faUserCircle} className="text-gray-400 text-xl" />
-                <span className="text-sm font-bold">{user.name.split(' ')[0]}</span>
+                <FontAwesomeIcon
+                  icon={faUserCircle}
+                  className="text-gray-400 text-xl"
+                />
+                <span className="text-sm font-bold">
+                  {user.name.split(" ")[0]}
+                </span>
               </div>
               <button
                 onClick={logout}
@@ -95,11 +113,14 @@ const Navbar = () => {
         </div>
 
         {/* MOBILE MENU BUTTON */}
-        <button 
+        <button
           className="md:hidden text-gray-600"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} size="lg" />
+          <FontAwesomeIcon
+            icon={isMobileMenuOpen ? faTimes : faBars}
+            size="lg"
+          />
         </button>
       </div>
 
@@ -107,9 +128,9 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="absolute top-20 left-0 w-full bg-white border-b border-gray-100 p-6 flex flex-col gap-4 md:hidden shadow-xl animate-in slide-in-from-top duration-300">
           {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              to={link.path} 
+            <Link
+              key={link.name}
+              to={link.path}
               onClick={() => setIsMobileMenuOpen(false)}
               className="text-lg font-bold text-gray-800"
             >
@@ -118,11 +139,20 @@ const Navbar = () => {
           ))}
           <hr className="border-gray-100" />
           {user ? (
-            <button onClick={logout} className="text-left text-lg font-bold text-rose-600">Logout</button>
+            <button
+              onClick={logout}
+              className="text-left text-lg font-bold text-rose-600"
+            >
+              Logout
+            </button>
           ) : (
             <>
-              <Link to="/login" className="text-lg font-bold text-gray-800">Login</Link>
-              <Link to="/register" className="text-lg font-bold text-blue-600">Get Started</Link>
+              <Link to="/login" className="text-lg font-bold text-gray-800">
+                Login
+              </Link>
+              <Link to="/register" className="text-lg font-bold text-blue-600">
+                Get Started
+              </Link>
             </>
           )}
         </div>
