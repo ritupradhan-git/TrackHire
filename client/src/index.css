@@ -51,4 +51,27 @@
   .animate-blob {
     animation: var(--animate-blob);
   }
+
+  .modal-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 transparent;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
 }
