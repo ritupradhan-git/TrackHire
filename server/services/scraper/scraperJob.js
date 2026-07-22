@@ -14,7 +14,8 @@ export const scrapeJobPosting = async (url) => {
     try {
       console.log("Navigating to ", url);
       await page.goto(url, {
-        waitUntil: "networkidle"
+        waitUntil: "domcontentloaded",
+        timeout: 30000,
       });
       await page.waitForTimeout(3000);
       await page.waitForSelector("body", { timeout: 15000 });
@@ -71,7 +72,12 @@ export const scrapeJobPosting = async (url) => {
       }
 
       return jobData;
-    } finally {
+    } 
+    catch(err){
+      console.error("SCRAPER ERROR:", err);
+      console.error(err.stack);
+    }
+    finally {
       await page.close();
       await context.close();
     }
